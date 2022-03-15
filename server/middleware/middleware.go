@@ -45,7 +45,7 @@ func createDBInstance() {
 		log.Fatal(err)
 	}
 
-	client.Ping(context.TODO(), nil)
+	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,13 +57,14 @@ func createDBInstance() {
 }
 
 func GetAllTasks(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/x-www-form urlencoded")
+	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	payload := getAllTasks()
 	json.NewEncoder(w).Encode(payload)
 }
 
 func CreateTask(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
@@ -86,6 +87,7 @@ func TaskComplete(w http.ResponseWriter, r *http.Request) {
 }
 
 func UndoTask(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/x-www-form-urlencoded")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "PUT")
@@ -101,9 +103,9 @@ func DeleteTask(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
 	params := mux.Vars(r)
 	deleteOneTask(params["id"])
+
 }
 
 func DeleteAllTasks(w http.ResponseWriter, r *http.Request) {
@@ -129,6 +131,7 @@ func getAllTasks() []primitive.M {
 		results = append(results, result)
 	}
 	if err := cur.Err(); err != nil {
+
 		log.Fatal(err)
 	}
 	cur.Close(context.Background())
@@ -157,6 +160,7 @@ func insertOneTask(task models.ToDoList) {
 }
 
 func undoTask(task string) {
+
 	id, _ := primitive.ObjectIDFromHex(task)
 	filter := bson.M{"_id": id}
 	update := bson.M{"$set": bson.M{"status": false}}
@@ -174,7 +178,7 @@ func deleteOneTask(task string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Deleted document", d.DeletedCount)
+	fmt.Println("Deleted Document", d.DeletedCount)
 }
 
 func deleteAllTasks() int64 {
